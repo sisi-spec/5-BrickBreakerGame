@@ -1,0 +1,43 @@
+package tour1;
+import javax.swing.*;
+
+import java.awt.FlowLayout;
+import java.awt.event.*;
+import java.util.Random;
+public class tour extends JFrame
+{
+	    private JButton button;
+	    private JLabel label;
+	    private String[] cities = {"北京", "上海", "广州", "深圳", "成都"};
+
+	    public tour() {
+	        // 设置窗口标题和大小
+	        setTitle("城市抽签程序");
+	        setSize(300, 200);
+	        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        setLayout(new FlowLayout());
+
+	        // 创建按钮和标签
+	        button = new JButton("抽取城市");
+	        label = new JLabel("点击按钮抽取一个城市");
+	        add(button);
+	        add(label);
+
+	        // 为按钮添加事件监听器
+	        button.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                Random random = new Random();
+	                int index = random.nextInt(cities.length);
+	                label.setText("抽取的城市是: " + cities[index]);
+	            }
+	        });
+	    }
+
+	    public static void main(String[] args) {
+	        SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	                new tour().setVisible(true);
+	            }
+	        });
+	    }
+	}
