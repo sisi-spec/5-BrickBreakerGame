@@ -17,6 +17,8 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	   private final int BALL_SIZE = 20, PADDLE_WIDTH = 100, PADDLE_HEIGHT = 10;
 	   private int ballDeltaX = -2, ballDeltaY = -2; // 球的移动速度
 	   private boolean[][] bricks = new boolean[BRICK_ROWS][BRICK_COLUMNS];
+	   private JButton startButton;
+	   private boolean ballMoving = false;
 	   
 	   public ww() {
 		   //初始化砖块数组
@@ -34,6 +36,15 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	       // 设置游戏循环的定时器
 	       timer = new Timer(6, this);
 	       timer.start();
+	       
+	       startButton = new JButton("开始游戏");
+	       startButton.addActionListener(new ActionListener() {
+	           @Override
+	           public void actionPerformed(ActionEvent e) {
+	               startGame(); // 当按钮被点击时调用 startGame 方法
+	           }
+	       });
+	       add(startButton); // 将按钮添加到面板上
 	   }
 	 
 	   // 游戏主循环
@@ -42,6 +53,10 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	           ballX += ballDeltaX;
 	           ballY += ballDeltaY;
 	 
+	           if (ballMoving) {
+	               // 移动小球
+	               ballX += ballDeltaX;
+	               ballY += ballDeltaY;
 	           // 检测墙壁碰撞
 	           if (ballX < 0 || ballX > WIDTH - BALL_SIZE) {
 	               ballDeltaX *= -1;
@@ -58,7 +73,7 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	           
 	        // 检测砖块碰撞
 	           collisionWithBricks();
-	           
+	           }
 	           repaint();
 	       }
 	   }
@@ -117,6 +132,20 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	   @Override
 	   public void keyTyped(KeyEvent e) {}
 	 
+	   public void startGame() {
+	       running = true;// 假设有一个变量 running 控制游戏运行
+	       startButton.setVisible(false);// 游戏开始后隐藏按钮
+	       // 重置小球的位置到挡板处
+	       ballX = paddleX + PADDLE_WIDTH / 2 - BALL_SIZE / 2;
+	       ballY = HEIGHT - PADDLE_HEIGHT - BALL_SIZE;
+	       
+	       ballMoving = true; // 设置小球移动的标志为true
+	       
+	       // 重置小球的移动速度
+	       ballDeltaX = -2; // 假设小球初始向左移动
+	       ballDeltaY = -2; // 假设小球初始向上移动
+	   }
+	   
 	   public static void main(String[] args) {
 	       JFrame frame = new JFrame("打砖块游戏");
 	       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -126,11 +155,9 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	       frame.setLocationRelativeTo(null);
 	       frame.setVisible(true);
 	    // 启动游戏（如果游戏逻辑中有启动游戏的额外步骤）
-	       game.startGame();
+	       //game.startGame();
 	    }
 	     
 	    // 在 BreakoutGame 类中，你可以添加一个方法来启动游戏
-	    public void startGame() {
-	       running = true; // 假设有一个变量 running 控制游戏运行
-	   }
+
 }
