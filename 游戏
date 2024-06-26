@@ -12,6 +12,10 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	   private final int BRICK_WIDTH = WIDTH / BRICK_COLUMNS, BRICK_HEIGHT = 20;
 	   private Timer timer;
 	   private boolean running = true;
+	   
+	    private boolean gameWon = false;
+	    private boolean gameOver = false;
+	    
 	   private int ballX = WIDTH / 2, ballY = HEIGHT / 2;
 	   private int paddleX = WIDTH / 2;
 	   private final int BALL_SIZE = 20, PADDLE_WIDTH = 100, PADDLE_HEIGHT = 10;
@@ -34,7 +38,7 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	       addKeyListener(this);
 	 
 	       // 设置游戏循环的定时器
-	       timer = new Timer(6, this);
+	       timer = new Timer(28, this);
 	       timer.start();
 	       
 	       startButton = new JButton("开始游戏");
@@ -49,7 +53,7 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	 
 	   // 游戏主循环
 	   public void actionPerformed(ActionEvent e) {
-	       if (running) {
+	       if (running && !gameOver && !gameWon) {
 	           ballX += ballDeltaX;
 	           ballY += ballDeltaY;
 	 
@@ -69,6 +73,11 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	               if (ballX > paddleX && ballX < paddleX + PADDLE_WIDTH) {
 	                   ballDeltaY *= -1;
 	               }
+	               
+	               else {
+	                    gameOver = true;
+	               }
+	               
 	           }
 	           
 	        // 检测砖块碰撞
@@ -94,6 +103,26 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	       }
 	   }
 	   
+	   // 检查是否所有砖块都消失
+	   private void checkBricks() {
+	        boolean allDestroyed = true;
+	        for (int i = 0; i < BRICK_ROWS; i++) {
+	            for (int j = 0; j < BRICK_COLUMNS; j++) {
+	                if (bricks[i][j]) {
+	                    allDestroyed = false;
+	                    break;
+	                }
+	            }
+	            if (!allDestroyed) {
+	                break;
+	            }
+	        }
+	        if (allDestroyed) {
+	            gameWon = true;
+	            running = false;
+	        }
+	    }
+	   
 	   // 绘制游戏元素
 	   @Override
 	   protected void paintComponent(Graphics g) {
@@ -110,6 +139,23 @@ public class ww extends JPanel implements ActionListener, KeyListener
                }
            }
        }
+       
+       // 绘制游戏结束或胜利信息
+       g.setFont(new Font("Arial", Font.BOLD, 30));
+       g.setColor(Color.WHITE);
+       if (gameOver) {
+       	  g.setFont(new Font("Arial", Font.BOLD, 36));
+             g.setColor(Color.RED);
+             String message = "Game Over";
+             g.drawString(message, (WIDTH - g.getFontMetrics().stringWidth(message)) / 2, HEIGHT / 2 - 50);
+       } else if (gameWon) {
+       	 g.setFont(new Font("Arial", Font.BOLD, 36));
+            g.setColor(Color.RED);
+       	String successMessage = "Congratulations! You won!";
+            g.drawString(successMessage, (WIDTH - g.getFontMetrics().stringWidth(successMessage)) / 2, HEIGHT / 2 - 50);
+
+       }
+       
    }
 
 	   // 键盘事件处理
