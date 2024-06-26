@@ -3,6 +3,9 @@ package ww;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.Random;
 
 public class ww extends JPanel implements ActionListener, KeyListener
 {
@@ -24,6 +27,8 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	   private JButton startButton;
 	   private boolean ballMoving = false;
 	   
+	   private Color[][] brickColors; // 存储砖块颜色的二维数组
+	   
 	   public ww() {
 		   //初始化砖块数组
 		   for (int i = 0; i < BRICK_ROWS; i++) {
@@ -31,7 +36,16 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	               bricks[i][j] = true;
 	           }
 	       }
-		   
+	        
+		   // 初始化砖块颜色数组
+	        brickColors = new Color[BRICK_ROWS][BRICK_COLUMNS];
+	        Random random = new Random();
+	        for (int i = 0; i < BRICK_ROWS; i++) {
+	            for (int j = 0; j < BRICK_COLUMNS; j++) {
+	                brickColors[i][j] = getRandomColor(); // 为每个砖块分配颜色并存储
+	            }
+	        }
+	        
 	       setPreferredSize(new Dimension(WIDTH, HEIGHT));
 	       setBackground(Color.BLACK);
 	       setFocusable(true);
@@ -40,7 +54,7 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	       // 设置游戏循环的定时器
 	       timer = new Timer(28, this);
 	       timer.start();
-	       
+	   	   
 	       startButton = new JButton("开始游戏");
 	       startButton.addActionListener(new ActionListener() {
 	           @Override
@@ -50,6 +64,13 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	       });
 	       add(startButton); // 将按钮添加到面板上
 	   }
+	   
+	   private Random random = new Random(); // 创建一个随机数生成器实例
+		// 绘制彩色砖块
+		   private Color getRandomColor() {
+		       // 生成随机颜色
+		       return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+		   }
 	 
 	   // 游戏主循环
 	   public void actionPerformed(ActionEvent e) {
@@ -135,6 +156,9 @@ public class ww extends JPanel implements ActionListener, KeyListener
        for (int i = 0; i < BRICK_ROWS; i++) {
            for (int j = 0; j < BRICK_COLUMNS; j++) {
                if (bricks[i][j]) {
+            	   
+            	   g.setColor(brickColors[i][j]); // 从之前生成的颜色数组中获取颜色
+            	   
                    g.fillRect(j * BRICK_WIDTH, i * BRICK_HEIGHT, BRICK_WIDTH, BRICK_HEIGHT);
                }
            }
@@ -203,7 +227,4 @@ public class ww extends JPanel implements ActionListener, KeyListener
 	    // 启动游戏（如果游戏逻辑中有启动游戏的额外步骤）
 	       //game.startGame();
 	    }
-	     
-	    // 在 BreakoutGame 类中，你可以添加一个方法来启动游戏
-
 }
